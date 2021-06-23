@@ -1,0 +1,35 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>List</title> 
+</head> 
+<center>
+<body>  
+  
+<h3>Employee Information</h3>
+<table border=5>  
+    <thead>  
+        <td>ID</td>  
+        <td>Name</td>  
+        <td>Email</td>  
+        <td>Address</td>  
+    </thead>  
+      
+    {% for time in times %}  
+      
+        <tr>  
+            <td>{{time["id"]}}</td>  
+            <td>{{time["name"]}}</td>  
+            <td>{{time["email"]}}</td>  
+            <td>{{time["address"]}}</td>  
+        </tr>  
+      
+    {% endfor %}  
+</table>  
+<br><br>  
+  
+<a href="/">Go back to home page</a><br> 
+  
+</body> 
+</center>  
+</html>  
