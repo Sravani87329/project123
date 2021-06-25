@@ -1,4 +1,5 @@
 
+import hashlib
 from flask import Flask,render_template,request
 from google.cloud import datastore
 import os
@@ -65,7 +66,6 @@ def serve_home():
     return render_template('home.html',question={})
 
 
-
 @app.route('/saved', methods=['GET', 'POST'])
 def add_question():
     msg="msg"
@@ -73,7 +73,14 @@ def add_question():
         return render_template('add.html')
     elif request.method == 'POST':
         data = request.form.to_dict(flat=True)
-        print(data)
+        salt=os.urandom(16).hex()
+        data['salt']=salt
+        password=data['password']
+        h=hashlib.sha512()
+        p=salt+password
+        h.update(p.encode('utf-8'))       #converts the string to bytes to be acceptable by hash function
+        password=h.hexdigest()            #returns the encoded data in hexadecimal format
+        data['password']=password
         save_question(data)
         msg="Record added successfully"
         return render_template('add.html',msg=msg)
@@ -89,17 +96,17 @@ def fetch_employee():
     times=query.fetch(limit=limit)
     return render_template('index.html',times=times)
 
-"""
-@app.route('/fetch',methods=["GET","POST"])
-def fetch():
+
+@app.route('/view1',methods=["GET","POST"])
+def fetch1():
     query=datastore_client.query(kind="Question10")
     name=request.form.get('name')
-    breakpoint()
-    times=query.add_filter("name",'=',"rahul").fetch()
-    print(times)
-    return render_template
-"""
+    times=query.add_filter("name",'=',name).fetch(limit=1)
+    return render_template('view.html',times=times)
 
+@app.route("/fetch")  
+def fetch():  
+    return render_template("fetch.html") 
   
 
 if __name__=="__main__":
